@@ -1,5 +1,6 @@
 # Runtime data — do not commit weights or runs
 models/
+model/
 output/
 checkpoints/
 cache/

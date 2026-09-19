@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 from pathlib import Path
 
-from aisl_train.config import DEFAULT_CONTAINER_DATA, TrainingConfig
+from aisl_train.config import DEFAULT_CONTAINER_CACHE, DEFAULT_CONTAINER_DATA, DEFAULT_CONTAINER_OUTPUT, TrainingConfig
 from aisl_train.dataset import discover_manifest
 
 SRC = Path(__file__).resolve().parents[1] / "src" / "aisl_train"
@@ -10,7 +10,9 @@ SRC = Path(__file__).resolve().parents[1] / "src" / "aisl_train"
 def test_container_defaults_are_overrideable() -> None:
     cfg = TrainingConfig(train_path="/custom/train.chat.jsonl", output_path="/custom/out", model_path="/custom/model")
     assert str(cfg.resolved_train_path()) == "/custom/train.chat.jsonl"
-    assert DEFAULT_CONTAINER_DATA == "/data/aisl"
+    assert DEFAULT_CONTAINER_DATA == "/opt/aisl-data"
+    assert DEFAULT_CONTAINER_OUTPUT == "/output"
+    assert DEFAULT_CONTAINER_CACHE == "/cache"
 
 
 def test_manifest_discovery_is_relative_to_dataset(tmp_path: Path) -> None:
@@ -23,7 +25,7 @@ def test_manifest_discovery_is_relative_to_dataset(tmp_path: Path) -> None:
 
 
 def test_runtime_source_has_no_developer_paths() -> None:
-    banned = ("/home/james", "../aisl", "/models/Qwen")
+    banned = ("/home/james", "../aisl", "/models/Qwen", "/srv/aisl-training", "AISL_DATA_HOST_PATH")
     for path in SRC.glob("*.py"):
         text = path.read_text(encoding="utf-8")
         for needle in banned:

@@ -11,6 +11,12 @@ from pathlib import Path
 from typing import Any
 
 from aisl_train.errors import MissingCapabilityError, MissingDependencyError
+from aisl_train.packaged import (
+    container_runtime_paths,
+    in_training_container,
+    load_aisl_build_metadata,
+    packaged_corpus_status,
+)
 
 TRAIN_PACKAGES = (
     "torch",
@@ -44,6 +50,8 @@ def snapshot_environment() -> dict[str, Any]:
     return {
         "versions": versions,
         "cuda": cuda,
+        "aisl": load_aisl_build_metadata(),
+        "packaged_corpus": packaged_corpus_status(),
         "env": {
             "HF_HOME": os.environ.get("HF_HOME"),
             "HF_HUB_OFFLINE": os.environ.get("HF_HUB_OFFLINE"),
@@ -105,15 +113,38 @@ def doctor_report(
     if require_gpu and not cuda.get("available"):
         add("gpu_required", False, "CUDA is required for this check")
 
-    if model_path is not None:
-        add("model_path", model_path.exists(), str(model_path))
+    runtime = container_runtime_paths()
+    check_model = model_path if model_path is not None else (runtime["model"] if in_training_container() else None)
+    check_output = output_path if output_path is not None else (runtime["output"] if in_training_container() else None)
+    check_cache = runtime["cache"] if in_training_container() else None
+
+    if check_model is not None:
+        add("model_path", _model_present(check_model), str(check_model))
     if dataset_path is not None:
         add("dataset_path", dataset_path.exists(), str(dataset_path))
-    if output_path is not None:
-        writable = _writable(output_path)
-        add("output_writable", writable, str(output_path))
+    if check_output is not None:
+        add("output_writable", _writable(check_output), str(check_output))
+    if check_cache is not None:
+        add("cache_writable", _writable(check_cache), str(check_cache))
+
+    corpus = env["packaged_corpus"]
+    add("packaged_aisl_corpus", bool(corpus.get("ok")), str(corpus))
+    aisl = env["aisl"]
+    add("aisl_commit", bool(aisl.get("aisl_commit")), str(aisl.get("aisl_commit") or "not recorded"))
+    add("aisl_ref_requested", bool(aisl.get("aisl_ref_requested")), str(aisl.get("aisl_ref_requested") or "unset"))
+    add(
+        "aisl_manifest",
+        bool((corpus.get("required") or {}).get("manifest.json")),
+        str(Path(str(corpus.get("directory"))) / "manifest.json"),
+    )
 
     return {"ok": ok, "checks": checks, "environment": env}
+
+
+def _model_present(path: Path) -> bool:
+    if path.is_file():
+        return True
+    return path.is_dir() and (path / "config.json").is_file()
 
 
 def assert_doctor(report: dict[str, Any], *, require: list[str] | None = None) -> None:

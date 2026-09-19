@@ -1,19 +1,19 @@
 # Status
 
 ```text
-generic runtime implemented
-unit tested (44 passed)
-Qwen profile implemented (minimal; runtime inspection pending)
-Docker environment implemented
-docker compose config: passed
-docker compose build: passed (aisl-train:local)
-GPU smoke test not yet run
-full Qwen training not yet run
+container architecture implemented
+AISL build-time acquisition implemented
+container build tested                 passed (aisl-train:local)
+GPU model inspection tested            not tested
+GPU smoke tested                       not tested
+full training tested                   not tested
 ```
 
-This checkout is a generic inspect → dataset-load → QLoRA/SFT →
-evaluate → compare runtime. It is not a claim that a 27B model has
-been trained.
+Image build cloned AISL `main` at
+`698bdd1abc6fd7bf645568ac6e88c932d226b397` and packaged
+`/opt/aisl-data`. `aisl-train doctor` inside the image saw the
+corpus and ML stack. CUDA/model checks failed on this host because
+no GPU and no mounted checkpoint were present. That is not a GPU
+smoke result.
 
-Do not treat unit tests as GPU readiness. `aisl-train smoke` on
-the GPU server is the hardware gate.
+Do not treat unit tests as GPU readiness.

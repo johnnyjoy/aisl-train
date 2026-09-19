@@ -85,6 +85,10 @@ aisl-train commit, Python/PyTorch/CUDA/library versions, GPUs.
 
 ## Dataset paths
 
-Core logic takes explicit `--train` / `--eval` paths. Sibling
-`../aisl` is a convenient host mount via `.env`, not a library
-default. Containers use `/data/aisl`.
+The training image packages AISL exports at `/opt/aisl-data`.
+Omitted `--train` / `--validation` / `--eval` use those files.
+Explicit paths always override. A sibling aisl checkout is not
+required.
+
+Evaluation prompts and scorers come from the cloned tree at
+`/workspace/aisl`.

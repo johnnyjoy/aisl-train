@@ -12,7 +12,7 @@ from aisl_train.errors import ConfigError
 
 # Overrideable container defaults. Not developer workstation paths.
 DEFAULT_CONTAINER_MODEL = "/models/base"
-DEFAULT_CONTAINER_DATA = "/data/aisl"
+DEFAULT_CONTAINER_DATA = "/opt/aisl-data"
 DEFAULT_CONTAINER_OUTPUT = "/output"
 DEFAULT_CONTAINER_CACHE = "/cache"
 

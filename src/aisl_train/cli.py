@@ -12,10 +12,11 @@ from typing import Any, Sequence
 
 from aisl_train import __version__
 from aisl_train.compare import compare_experiment
-from aisl_train.config import TrainingConfig, load_training_config
+from aisl_train.config import DEFAULT_CONTAINER_MODEL, TrainingConfig, load_training_config
 from aisl_train.environment import doctor_report, format_doctor_text, snapshot_environment
 from aisl_train.errors import AislTrainError
 from aisl_train.inspect import format_inspection_text, inspect_model_path
+from aisl_train.packaged import apply_packaged_defaults
 from aisl_train.profile import resolve_profile
 
 PROG = "aisl-train"
@@ -36,7 +37,7 @@ def build_parser() -> argparse.ArgumentParser:
     doctor.add_argument("--require-gpu", action="store_true", help="fail if CUDA is unavailable")
 
     inspect_p = sub.add_parser("inspect", help="inspect a model without training")
-    _add_common_paths(inspect_p, model=True, required_model=True)
+    _add_common_paths(inspect_p, model=True, required_model=False)
     inspect_p.add_argument("--profile", help="profile id or JSON path")
     inspect_p.add_argument("--json", action="store_true", help="print JSON")
 
@@ -114,7 +115,7 @@ def _add_train_shared(parser: argparse.ArgumentParser) -> None:
 
 def _add_eval_shared(parser: argparse.ArgumentParser) -> None:
     _add_common_paths(parser, model=True, required_model=True, output=True)
-    parser.add_argument("--eval", required=True, help="evaluation JSONL")
+    parser.add_argument("--eval", help="evaluation JSONL (default: packaged AISL test set)")
     parser.add_argument("--prompt-file", help="system prompt file (AISL eval/prompts/*.txt)")
     parser.add_argument("--max-new-tokens", dest="max_new_tokens", type=int)
     _add_profile_and_config(parser)
@@ -149,7 +150,7 @@ def _config_from_args(args: argparse.Namespace) -> TrainingConfig:
         overrides["train_path"] = train_path
     if getattr(args, "max_new_tokens", None):
         overrides["generation"] = {"max_new_tokens": args.max_new_tokens}
-    return load_training_config(config_path, overrides=overrides)
+    return apply_packaged_defaults(load_training_config(config_path, overrides=overrides))
 
 
 def _load_runtime():
@@ -191,12 +192,13 @@ def _dispatch(args: argparse.Namespace) -> int:
         return 0
     if command == "smoke":
         runtime = _load_runtime()
-        return runtime.run_smoke(_config_from_args(args))
+        cfg = _config_from_args(args)
+        if not cfg.output_path:
+            raise AislTrainError("smoke requires --output")
+        return runtime.run_smoke(cfg)
     if command == "train":
         runtime = _load_runtime()
         cfg = _config_from_args(args)
-        if not cfg.train_path:
-            raise AislTrainError("train requires --train or --dataset")
         if not cfg.output_path:
             raise AislTrainError("train requires --output")
         return runtime.run_train(cfg)
@@ -230,7 +232,8 @@ def _cmd_doctor(args: argparse.Namespace) -> int:
 
 
 def _cmd_inspect(args: argparse.Namespace) -> int:
-    inspection = inspect_model_path(args.model)
+    model = args.model or DEFAULT_CONTAINER_MODEL
+    inspection = inspect_model_path(model)
     profile = resolve_profile(args.profile, inspection=inspection.to_dict())
     if profile:
         inspection.matched_profile = profile.id

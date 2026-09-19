@@ -11,6 +11,8 @@ Intent, not a contract. Not implemented in this checkout.
 5. Model merging
 6. Ollama / GGUF packaging
 7. Publication of adapters
+8. Optional Hugging Face model download / cache / auth
+9. Publish `tigersmile/aisl-train:<tag>` after GPU validation
 
 Do not generate AISL semantics here. Do not modify held-out truth
 files from aisl.

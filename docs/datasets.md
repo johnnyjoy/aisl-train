@@ -4,6 +4,10 @@ aisl-train consumes aisl exports. It does not generate them.
 
 Authoritative contract: aisl `docs/training-interface.md`.
 
+The Docker image clones AISL and exposes a stable view at
+`/opt/aisl-data` (symlinks into `/workspace/aisl/training/data`).
+Do not copy corpus files onto the GPU host.
+
 ## Formats
 
 Chat JSONL:
@@ -37,8 +41,9 @@ If `manifest.json` sits next to or one directory above the JSONL,
 it is copied into experiment metadata. `records.jsonl` can be
 joined for task/language/difficulty/category breakdowns.
 
-Pass `--manifest` / `--records` / `--aisl-root` when discovery is
-not enough.
+The packaged image sets `aisl_root` to `/workspace/aisl` when
+`eval/` is present. `--manifest` / `--records` / `--aisl-root`
+override that.
 
 ## Sequence length
 

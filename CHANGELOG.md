@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+* Clone AISL during the image build; no host AISL mount.
+* Packaged corpus defaults at `/opt/aisl-data`.
+* Compose mounts only model, output, and cache.
+
 ## 0.1.0
 
 First functional generic AISL-Train runtime.

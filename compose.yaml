@@ -4,7 +4,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: aisl-train:local
+      args:
+        AISL_REF: ${AISL_REF:-main}
+        AISL_TRAIN_COMMIT: ${AISL_TRAIN_COMMIT:-unknown}
+    image: ${AISL_TRAIN_IMAGE:-aisl-train:local}
     working_dir: /workspace/aisl-train
     gpus: all
     shm_size: "16gb"
@@ -15,9 +18,10 @@ services:
       HF_DATASETS_CACHE: /cache/datasets
       HF_HUB_OFFLINE: ${HF_HUB_OFFLINE:-1}
       TRANSFORMERS_OFFLINE: ${TRANSFORMERS_OFFLINE:-1}
+      AISL_ROOT: /workspace/aisl
+      AISL_PACKAGED_DATA: /opt/aisl-data
     volumes:
-      - ${MODEL_HOST_PATH:-/srv/aisl-training/model/Qwen3.8-27B}:/models/base:ro
-      - ${AISL_DATA_HOST_PATH:-../aisl/training/data/exports}:/data/aisl:ro
-      - ${OUTPUT_HOST_PATH:-/srv/aisl-training/output}:/output
-      - ${CACHE_HOST_PATH:-/srv/aisl-training/cache}:/cache
+      - ${MODEL_HOST_PATH:-./model}:/models/base:ro
+      - ${OUTPUT_HOST_PATH:-./output}:/output
+      - ${CACHE_HOST_PATH:-./cache}:/cache
     command: ["aisl-train", "--help"]

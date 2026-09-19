@@ -44,13 +44,21 @@ quantization. Use `--force-resume` only when that is intentional.
 
 ## semantic scores missing
 
-aisl-train always keeps raw generations. Semantic scoring runs
-only when `--aisl-root` points at aisl's `eval/scripts/score_file.py`
-and the eval file is an AISL eval-case set. Otherwise score later
-with aisl.
+aisl-train always keeps raw generations. In the training image,
+`--aisl-root` defaults to the cloned `/workspace/aisl`. Semantic
+scoring runs when that scorer is present and the eval file is an
+AISL eval-case set.
 
 ## Docker build
 
 If `docker compose build` cannot resolve the pinned torch or CUDA
 base tag, stop and record the resolver error. Do not silently
 switch to a CPU wheel.
+
+If `AISL_REF` cannot be fetched, or required exports are missing
+from that revision, the build fails. There is no fallback branch.
+
+## doctor reports packaged AISL missing on a desktop
+
+Expected outside the image. Run doctor via
+`docker compose run --rm trainer aisl-train doctor`.
