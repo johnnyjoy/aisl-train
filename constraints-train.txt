@@ -1,0 +1,15 @@
+# Intended GPU image pins. The Dockerfile installs these.
+# Resolved versions are written to /opt/aisl-train/pip-freeze.txt at image build.
+#
+# Previously functioning stack on the GPU host:
+#   torch          2.11.0+cu128
+#   CUDA runtime   12.8
+#   transformers   5.17.0
+#   bitsandbytes   0.50.2
+#   peft           0.21.0
+#   trl            1.13.0
+torch==2.11.0
+transformers==5.17.0
+bitsandbytes==0.50.2
+peft==0.21.0
+trl==1.13.0

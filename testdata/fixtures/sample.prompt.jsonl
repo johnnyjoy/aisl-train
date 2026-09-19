@@ -1,0 +1,2 @@
+{"prompt": "Context:\nAISL/0.2.0\nLOSS 0\nDICT core@0.2.0\n\nFact @api dep @postgres\n\n\nQuestion:\nWhat is the primary AISL operator?", "completion": "Fact"}
+{"prompt": "Render this AISL in language en:\nAISL/0.2.0\nLOSS 0\nDICT core@0.2.0\n\nFact @api dep @postgres\n", "completion": "The API depends on Postgres."}

@@ -1,0 +1,4 @@
+{
+  "tokenizer_class": "LlamaTokenizer",
+  "chat_template": "{% for message in messages %}{% if message['role'] == 'user' %}{{ 'USER:' + message['content'] }}{% elif message['role'] == 'assistant' %}{% generation %}{{ 'ASSISTANT:' + message['content'] }}{% endgeneration %}{% endif %}{% endfor %}"
+}

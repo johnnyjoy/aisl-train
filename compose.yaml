@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: Apache-2.0
+services:
+  trainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aisl-train:local
+    working_dir: /workspace/aisl-train
+    gpus: all
+    shm_size: "16gb"
+    ipc: host
+    environment:
+      HF_HOME: /cache/huggingface
+      TRANSFORMERS_CACHE: /cache/huggingface
+      HF_DATASETS_CACHE: /cache/datasets
+      HF_HUB_OFFLINE: ${HF_HUB_OFFLINE:-1}
+      TRANSFORMERS_OFFLINE: ${TRANSFORMERS_OFFLINE:-1}
+    volumes:
+      - ${MODEL_HOST_PATH:-/srv/aisl-training/model/Qwen3.8-27B}:/models/base:ro
+      - ${AISL_DATA_HOST_PATH:-../aisl/training/data/exports}:/data/aisl:ro
+      - ${OUTPUT_HOST_PATH:-/srv/aisl-training/output}:/output
+      - ${CACHE_HOST_PATH:-/srv/aisl-training/cache}:/cache
+    command: ["aisl-train", "--help"]

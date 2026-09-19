@@ -1,0 +1,5 @@
+{
+  "model_type": "t5",
+  "architectures": ["T5ForConditionalGeneration"],
+  "is_encoder_decoder": true
+}

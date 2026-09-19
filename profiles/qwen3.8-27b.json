@@ -1,0 +1,18 @@
+{
+  "id": "qwen3.8-27b",
+  "version": "0.1.0",
+  "runtime_validation": "pending",
+  "match": {
+    "name_contains": ["qwen3.8-27b", "Qwen3.8-27B", "qwen3.8"]
+  },
+  "peft": {
+    "target_modules": "all-linear"
+  },
+  "tokenizer": {
+    "chat_template": "tokenizer"
+  },
+  "precision": {
+    "preferred_compute_dtype": "auto"
+  },
+  "notes": "Minimal override profile. No local Qwen3.8-27B config.json was available to inspect while writing this file, so model_type and module names are not recorded. Generic all-linear LoRA and the tokenizer chat template are the intended path. Mark runtime_validation verified after aisl-train inspect --model /models/base on the GPU server."
+}

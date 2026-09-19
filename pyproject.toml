@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: Apache-2.0
+[project]
+name = "aisl-train"
+version = "0.1.0"
+description = "Generic model-training runtime for AISL-generated datasets"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+train = [
+    "torch>=2.6",
+    "transformers>=4.51",
+    "datasets>=3.0",
+    "trl>=0.21",
+    "peft>=0.15",
+    "bitsandbytes>=0.45",
+    "accelerate>=1.0",
+    "safetensors>=0.5",
+    "sentencepiece>=0.2",
+    "huggingface_hub>=0.26",
+]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+aisl-train = "aisl_train.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+    "integration: optional tiny-model test; not run by default",
+]

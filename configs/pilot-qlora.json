@@ -1,0 +1,36 @@
+{
+  "method": "qlora",
+  "seed": 42,
+  "quantization": {
+    "enabled": true,
+    "load_in_4bit": true,
+    "scheme": "nf4",
+    "double_quant": true,
+    "compute_dtype": "auto"
+  },
+  "max_seq_length": 2048,
+  "lora": {
+    "rank": 16,
+    "alpha": 32,
+    "dropout": 0.05,
+    "target_modules": "all-linear"
+  },
+  "micro_batch_size": 1,
+  "gradient_accumulation": 16,
+  "epochs": 2,
+  "learning_rate": 0.0002,
+  "warmup_ratio": 0.03,
+  "weight_decay": 0.0,
+  "max_grad_norm": 1.0,
+  "gradient_checkpointing": true,
+  "precision": "auto",
+  "device_strategy": "auto",
+  "memory_headroom_gib": 1.5,
+  "loss_mask": "assistant",
+  "logging_steps": 10,
+  "save_total_limit": 3,
+  "generation": {
+    "do_sample": false,
+    "max_new_tokens": 256
+  }
+}

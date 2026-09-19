@@ -1,0 +1,3 @@
+{"messages": [{"role": "user", "content": "Context:\nAISL/0.2.0\nLOSS 0\nDICT core@0.2.0\n\nFact @api dep @postgres\n\n\nQuestion:\nWhat is the primary AISL operator?"}, {"role": "assistant", "content": "Fact"}]}
+{"messages": [{"role": "user", "content": "Render this AISL in language en:\nAISL/0.2.0\nLOSS 0\nDICT core@0.2.0\n\nFact @api dep @postgres\n"}, {"role": "assistant", "content": "The API depends on Postgres."}]}
+{"messages": [{"role": "user", "content": "Render this AISL in language es:\nAISL/0.2.0\nLOSS 0\nDICT core@0.2.0\n\nFact @api dep @postgres\n"}, {"role": "assistant", "content": "El api is es ."}]}
